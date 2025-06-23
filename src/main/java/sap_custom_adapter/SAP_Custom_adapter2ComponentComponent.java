@@ -1,4 +1,4 @@
-package org.example;
+package sap_custom_adapter;
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -29,10 +29,10 @@ import org.slf4j.LoggerFactory;
  */
 public class SAP_Custom_adapter2ComponentComponent extends DefaultComponent {
 
-    private Logger LOG = LoggerFactory.getLogger(SAP_Custom_adapter2ComponentComponent.class);
+    private final Logger LOG = LoggerFactory.getLogger(SAP_Custom_adapter2ComponentComponent.class);
 
     protected Endpoint createEndpoint(final String uri, final String remaining, final Map<String, Object> parameters) throws Exception {
-        LOG.info("Creating the end point");
+        LOG.info("Creating endpoint for URI: {}", uri);
         final Endpoint endpoint = new SAP_Custom_adapter2ComponentEndpoint(uri, remaining, this);
         setProperties(endpoint, parameters);
         return endpoint;

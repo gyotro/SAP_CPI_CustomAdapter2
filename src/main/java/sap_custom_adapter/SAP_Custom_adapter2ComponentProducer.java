@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.example;
+package sap_custom_adapter;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.support.DefaultProducer;

@@ -15,4 +15,4 @@
 # limitations under the License.
 #
 
-class=org.example.SAP_Custom_adapter2ComponentComponent
+class=sap_custom_adapter.SAP_Custom_adapter2ComponentComponent

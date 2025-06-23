@@ -1,4 +1,4 @@
-package org.example;
+package sap_custom_adapter;
 
 
 /**
@@ -40,7 +40,7 @@ public class SAP_Custom_adapter2ComponentEndpoint extends DefaultPollingEndpoint
 
     @UriParam
     private String greetingsMessage;
-    
+
     @UriParam
     private boolean useFormater;
 
