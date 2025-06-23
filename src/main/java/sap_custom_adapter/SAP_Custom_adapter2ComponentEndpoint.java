@@ -36,29 +36,100 @@ import org.slf4j.LoggerFactory;
 public class SAP_Custom_adapter2ComponentEndpoint extends DefaultPollingEndpoint {
     private SAP_Custom_adapter2ComponentComponent component;
 
-    private transient Logger logger = LoggerFactory.getLogger(SAP_Custom_adapter2ComponentEndpoint.class);
+    private final transient Logger logger = LoggerFactory.getLogger(SAP_Custom_adapter2ComponentEndpoint.class);
+
+    public String getCloudConnectorLocation() {
+        return cloudConnectorLocation;
+    }
+
+    public void setCloudConnectorLocation(String cloudConnectorLocation) {
+        this.cloudConnectorLocation = cloudConnectorLocation;
+    }
+
+    public String getDbHost() {
+        return dbHost;
+    }
+
+    public void setDbHost(String dbHost) {
+        this.dbHost = dbHost;
+    }
+
+    public String getDbPort() {
+        return dbPort;
+    }
+
+    public void setDbPort(String dbPort) {
+        this.dbPort = dbPort;
+    }
+
+    public String getCustomConnectionString() {
+        return customConnectionString;
+    }
+
+    public void setCustomConnectionString(String customConnectionString) {
+        this.customConnectionString = customConnectionString;
+    }
+
+    public String getDbUser() {
+        return dbUser;
+    }
+
+    public void setDbUser(String dbUser) {
+        this.dbUser = dbUser;
+    }
+
+    public String getDbPassword() {
+        return dbPassword;
+    }
+
+    public void setDbPassword(String dbPassword) {
+        this.dbPassword = dbPassword;
+    }
+
+    public String getSelectQuery() {
+        return selectQuery;
+    }
+
+    public void setSelectQuery(String selectQuery) {
+        this.selectQuery = selectQuery;
+    }
+
+    public String getUpdateQuery() {
+        return updateQuery;
+    }
+
+    public void setUpdateQuery(String updateQuery) {
+        this.updateQuery = updateQuery;
+    }
+
+    public long getPollingInterval() {
+        return pollingInterval;
+    }
+
+    public void setPollingInterval(long pollingInterval) {
+        this.pollingInterval = pollingInterval;
+    }
 
     @UriParam
-    private String greetingsMessage;
-
+    private String cloudConnectorLocation;
     @UriParam
-    private boolean useFormater;
+    private String dbHost;
+    @UriParam
+    private String dbPort;
+    @UriParam
+    private String customConnectionString;
+    @UriParam
+    private String dbUser;
+    @UriParam
+    private String dbPassword;
+    @UriParam
+    private String selectQuery;
+    @UriParam
+    private String updateQuery;
+    @UriParam
+    private long pollingInterval;
 
-	public boolean getUseFormater() {
-		return useFormater;
-	}
 
-	public void setUseFormater(boolean useFormater) {
-		this.useFormater = useFormater;
-	}
-
-	public String getGreetingsMessage() {
-		return greetingsMessage;
-	}
-
-	public void setGreetingsMessage(String greetingsMessage) {
-		this.greetingsMessage = greetingsMessage;
-	}
 
 	public SAP_Custom_adapter2ComponentEndpoint() {
     }
@@ -80,6 +151,16 @@ public class SAP_Custom_adapter2ComponentEndpoint extends DefaultPollingEndpoint
         final SAP_Custom_adapter2ComponentConsumer consumer = new SAP_Custom_adapter2ComponentConsumer(this, processor);
         configureConsumer(consumer);
         return consumer;
+    }
+
+    public void logEndpointConfiguration() {
+        String configLog = "Endpoint configuration: host=" + dbHost +
+                ", port=" + dbPort +
+                ", user=" + dbUser +
+                ", cloudConnectorLocation=" + cloudConnectorLocation +
+                ", customString=" + customConnectionString +
+                ", pollingInterval=" + pollingInterval;
+        logger.debug(configLog);
     }
 
     public boolean isSingleton() {

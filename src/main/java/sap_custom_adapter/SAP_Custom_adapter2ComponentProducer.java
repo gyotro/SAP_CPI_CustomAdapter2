@@ -21,12 +21,17 @@ import org.apache.camel.support.DefaultProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.util.Properties;
+
 /**
  * The www.Sample.com producer.
  */
 public class SAP_Custom_adapter2ComponentProducer extends DefaultProducer {
     private static final transient Logger LOG = LoggerFactory.getLogger(SAP_Custom_adapter2ComponentProducer.class);
-    private SAP_Custom_adapter2ComponentEndpoint endpoint;
+    private final SAP_Custom_adapter2ComponentEndpoint endpoint;
 
 	public SAP_Custom_adapter2ComponentProducer(SAP_Custom_adapter2ComponentEndpoint endpoint) {
         super(endpoint);
@@ -38,18 +43,36 @@ public class SAP_Custom_adapter2ComponentProducer extends DefaultProducer {
         super.doStart();
     }
 
-    public void process(final Exchange exchange) throws Exception {
-        String input = exchange.getIn().getBody(String.class);
-		String greetingMessage = endpoint.getGreetingsMessage();
-		if(greetingMessage == null || greetingMessage.isEmpty()) {
-			greetingMessage = "(Producer) Hello!";
-		}
-		String messageInUpperCase = greetingMessage.toUpperCase();
-		if (input != null) {
-		    LOG.debug(input);
-			messageInUpperCase = input + " (Producer) : " + messageInUpperCase;
-		}
-		exchange.getIn().setBody(messageInUpperCase);
+    @Override
+    public void process(Exchange exchange) throws Exception {
+        LOG.info("Processing exchange in Producer with update query: {}", endpoint.getUpdateQuery());
+
+        String connectionString = String.format("jdbc:sqlserver://%s:%s;%s",
+                endpoint.getDbHost(),
+                endpoint.getDbPort(),
+                endpoint.getCustomConnectionString() != null ? endpoint.getCustomConnectionString() : "");
+
+        Properties props = new Properties();
+        props.put("user", endpoint.getDbUser());
+        props.put("password", endpoint.getDbPassword());
+        if (endpoint.getCloudConnectorLocation() != null && !endpoint.getCloudConnectorLocation().isEmpty()) {
+            props.put("sap.cloud.connector.locationid", endpoint.getCloudConnectorLocation());
+            LOG.info("Using Cloud Connector with location: {}", endpoint.getCloudConnectorLocation());
+        } else {
+            LOG.info("Connecting without Cloud Connector.");
+        }
+
+        try (Connection conn = DriverManager.getConnection(connectionString, props);
+             Statement stmt = conn.createStatement()) {
+
+            int result = stmt.executeUpdate(endpoint.getUpdateQuery());
+            LOG.info("Update result: {}", result);
+
+            exchange.getMessage().setBody("Updated rows: " + result);
+        } catch (Exception e) {
+            LOG.error("Error during update execution: ", e);
+            throw e;
+        }
     }
 
 }
